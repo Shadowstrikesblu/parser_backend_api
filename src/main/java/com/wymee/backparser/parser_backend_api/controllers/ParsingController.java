@@ -23,7 +23,7 @@ import java.net.http.HttpResponse;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/parsing")
+@RequestMapping("/parsing")
 @CrossOrigin
 public class ParsingController {
 
@@ -34,12 +34,13 @@ public class ParsingController {
         if (file.isEmpty()) {
             return "Bad credentials";
         } else {
-            //String url = "https://harveywymee/prototype/parse";
             //Mettre ici tout le code de construucgtion de la requête
             String[] name = Objects.requireNonNull(file.getOriginalFilename()).split(".");
 
             //if(name[name.length-1].equalsIgnoreCase("pdf")){
-            JSONObject parsingResults = getParsingData("http://127.0.0.1:3333/api/affindas", file);
+            //old one
+           // JSONObject parsingResults = getParsingData("http://127.0.0.1:3333/api/affindas", file);
+            JSONObject parsingResults = getParsingData("http://localhost:3000/matching", file);
 
             String candidateName = getCandidateNameFromParsingData(parsingResults);
             String candidateProfession = getCandidateProfessionFromParsingData(parsingResults);

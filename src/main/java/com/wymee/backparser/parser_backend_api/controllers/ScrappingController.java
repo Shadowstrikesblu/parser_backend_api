@@ -13,9 +13,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 @CrossOrigin(origins = "http://localhost:8090")
@@ -30,7 +33,7 @@ public class ScrappingController {
     public static ArrayList<Job> jobsList = new ArrayList<>();
     public static JSONObject listOfJobs = new JSONObject();
 
-    @GetMapping("/scrapp")
+    @GetMapping("/scrap-old")
     //@EventListener(ApplicationReadyEvent.class)
     public static String scrapping(@RequestParam(name = "data") String data) throws IOException, JSONException {
 
@@ -38,23 +41,21 @@ public class ScrappingController {
         JSONArray allData = new JSONArray(data);
 
         StringBuilder jobs = new StringBuilder();
-      try {
-          //if (!allData.isEmpty()) {
-              for (int i = 0; i < allData.length(); i++) {
+        try {
+            //if (!allData.isEmpty()) {
+            for (int i = 0; i < allData.length(); i++) {
 
-                  JSONObject obj = (JSONObject) allData.get(i);
-                  //doScrapping(obj.getString("job"), obj.getString("location"));
-                  jobs.append(obj.getString("job")).append(",");
-              }
-              jobs.deleteCharAt(jobs.length()-1);
-              System.out.println("jobs.toString()) = " + jobs.toString());
-              doScrapping(jobs.toString().replace(" ", "+"), "");
-          //} else {
-              //response.append("meta", Utilitaires.makeMeta("Error", "Bad credential, no data submitted"));
-          //}
-      }catch (org.json.JSONException e){
-          e.printStackTrace();
-      }
+                JSONObject obj = (JSONObject) allData.get(i);
+                //doScrapping(obj.getString("job"), obj.getString("location"));
+                jobs.append(obj.getString("job")).append(",");
+            }
+            jobs.deleteCharAt(jobs.length()-1);
+            System.out.println("jobs.toString()) = " + jobs.toString());
+            doScrapping(jobs.toString().replace(" ", "+"), "");
+
+        }catch (org.json.JSONException e){
+            e.printStackTrace();
+        }
         System.out.println("Jobs ==> " + jobsList.toString());
 
         return new Gson().toJson(jobsList);  //response.toString();
@@ -98,7 +99,7 @@ public class ScrappingController {
         return back.toString();
     }*/
 
-    /*public static ArrayList<Job> doScrapping(String job, String location) throws IOException {
+     /*public static ArrayList<Job> doScrapping(String job, String location) throws IOException {
 
         final String urlIndeed = "https://www.indeed.com/jobs?q="+job+"&l="+location;
         final String urlLinkup = "https://www.linkup.com/search/results/"+ job +"-jobs-in-"+ location;
@@ -134,16 +135,16 @@ public class ScrappingController {
 
     public static ArrayList<Job> doScrapping(String job, String location) throws IOException {
 
-        final String urlIndeed = "https://www.indeed.com/jobs?q="+job+"&l="+location;
-        final String urlLinkup = "https://www.linkup.com/search/results/"+ job +"-jobs-in-"+ location;
-        final String urlPoleEmploi = "https://candidat.pole-emploi.fr/offres/recherche?motsCles="+job+"&offresPartenaires=true&rayon=10&tri=0";
-        final String urlLinkedIn = "https://www.linkedin.com/jobs/search/?keywords="+ job +"&location="+ location;
+//        final String urlIndeed = "https://www.indeed.com/jobs?q="+job+"&l="+location;
+//        final String urlLinkup = "https://www.linkup.com/search/results/"+ job +"-jobs-in-"+ location;
+       final String urlPoleEmploi = "https://candidat.pole-emploi.fr/offres/recherche?motsCles="+job+"&offresPartenaires=true&rayon=10&tri=0";
+//        final String urlLinkedIn = "https://www.linkedin.com/jobs/search/?keywords="+ job +"&location="+ location;
 
         try{
-            scrappIndeed(urlIndeed);
-            scrappLinkup(urlLinkup);
+//            scrappIndeed(urlIndeed);
+//            scrappLinkup(urlLinkup);
             scrappPoleEmploi(urlPoleEmploi);
-            scrappLinkedIn(urlLinkedIn);
+//            scrappLinkedIn(urlLinkedIn);
 
             /*if(!jobsList.isEmpty()){
                 return jobsList;
@@ -167,8 +168,10 @@ public class ScrappingController {
         //Document document = null;
         int i = 0;
         try {
+            url = url.replace("é","e");
+            url = url.replace("ô","o");
+            url = url.replace("à","a");
             Document document = Jsoup.connect(url.replace(" ", "%2C%20")).get();
-
             if(document != null) {
                 for (Element subDoc : document.select("div.job_seen_beacon")) {
 
@@ -184,7 +187,7 @@ public class ScrappingController {
 
                     jobsList.add(aJob);
 
-                   listOfJobs.append("job", Utilitaires.jSONifyJob(aJob));
+                    listOfJobs.append("job", Utilitaires.jSONifyJob(aJob));
 
                     i++;
                 }
@@ -204,6 +207,9 @@ public class ScrappingController {
         //Document document2 = null;
 
         try{
+            url = url.replace("é","e");
+            url = url.replace("ô","o");
+            url = url.replace("à","a");
             Document document2 = Jsoup.connect(url.replace(" ", "-")).get();
 
             if (document2 != null){
@@ -220,7 +226,7 @@ public class ScrappingController {
 
                     jobsList.add(aJob);
 
-                   listOfJobs.append("job", Utilitaires.jSONifyJob(aJob));
+                    listOfJobs.append("job", Utilitaires.jSONifyJob(aJob));
 
                 }
             }else {
@@ -236,6 +242,10 @@ public class ScrappingController {
     public static void scrappPoleEmploi(String url) throws JSONException{
         //Document document3 = null;
         try{
+
+            url = url.replace("é","e");
+            url = url.replace("ô","o");
+            url = url.replace("à","a");
             Document document3 = Jsoup.connect(url.replace(" ", "+")).get();
             System.out.println("url = " + url);
             if(document3 != null){
@@ -257,7 +267,7 @@ public class ScrappingController {
 
                             jobsList.add(taff);
 
-                           listOfJobs.append("job", Utilitaires.jSONifyJob(taff));
+                            listOfJobs.append("job", Utilitaires.jSONifyJob(taff));
                         }
                     }
                 }
@@ -274,28 +284,31 @@ public class ScrappingController {
 
     public static void scrappLinkedIn(String url) throws JSONException{
         try{
+            url = url.replace("é","e");
+            url = url.replace("ô","o");
+            url = url.replace("à","a");
             Document document = Jsoup.connect(url.replace(" ", "%20")).get();
 
             if(document != null){
-                 Elements element = document.select("div.job-search-results.display-flex.flex-column");
+                Elements element = document.select("div.job-search-results.display-flex.flex-column");
 
-                    for(Element current : element.select("ul.jobs-search-results__list.list-style-none")) {
+                for(Element current : element.select("ul.jobs-search-results__list.list-style-none")) {
 
-                            String jobTitle = current.select("a.disabled.ember-view.job-card-container__link.job-card-list__title").text();
-                            String companyName = current.select("a.job-card-container__link.job-card-container__company-name.ember-view").text();
-                            String jobLocation = " ";
-                            String jobPostedAt = current.select("ul.job-card-list__footer-wrapper.job-card-container__footer-wrapper.flex-shrink-zero.display-flex.t-sans.t-12.t-black--light.t-normal.t-roman li.job-card-container__listed-time.job-card-container__footer-item").text();
-                            String jobDescription = current.select("div.media-body p.description").text();
-                            String jobContrat = current.select("div.media-body p.contrat").text();
+                    String jobTitle = current.select("a.disabled.ember-view.job-card-container_link.job-card-list_title").text();
+                    String companyName = current.select("a.job-card-container_link.job-card-container_company-name.ember-view").text();
+                    String jobLocation = " ";
+                    String jobPostedAt = current.select("ul.job-card-list_footer-wrapper.job-card-containerfooter-wrapper.flex-shrink-zero.display-flex.t-sans.t-12.t-black--light.t-normal.t-roman li.job-card-containerlisted-time.job-card-container_footer-item").text();
+                    String jobDescription = current.select("div.media-body p.description").text();
+                    String jobContrat = current.select("div.media-body p.contrat").text();
 
-                            Job taff = new Job(jobTitle, jobDescription, companyName, " ",
-                                    jobLocation, " ", " ", jobPostedAt, jobContrat, "Pole Emploi");
+                    Job taff = new Job(jobTitle, jobDescription, companyName, " ",
+                            jobLocation, " ", " ", jobPostedAt, jobContrat, "Pole Emploi");
 
-                            jobsList.add(taff);
+                    jobsList.add(taff);
 
-                           listOfJobs.append("job", Utilitaires.jSONifyJob(taff));
+                    listOfJobs.append("job", Utilitaires.jSONifyJob(taff));
 
-                    }
+                }
 
             }else {
                 System.out.println("No data got from "+ url);
@@ -308,13 +321,5 @@ public class ScrappingController {
         }
     }
 
-    /*@Bean
-    public WebMvcConfigurer corsConfigurer(){
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/match").allowedOrigins("http://localhost:8080");
-            }
-        };
-    }*/
+
 }

@@ -1,8 +1,9 @@
 package com.wymee.backparser.parser_backend_api.controllers;
 
-import com.wymee.backparser.parser_backend_api.classes.JobObject;
 import com.wymee.backparser.parser_backend_api.data.JobsDAO;
+import com.wymee.backparser.parser_backend_api.model.Job;
 import org.apache.catalina.connector.Connector;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class MatchingController {
     private static JobsDAO jobsDAO;
 
 
-    @GetMapping("/match")
+//    @GetMapping("/match")
+    @GetMapping("/scrapp")
     public static String match(@RequestParam(name = "data") String data) throws IOException, JSONException {
 
         //Créer ici la recupération des données à macther
@@ -69,8 +71,34 @@ public class MatchingController {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/match").allowedOrigins("http://localhost:8080").maxAge(3000);
+                registry.addMapping("/scrapp").allowedOrigins("http://localhost:8090").maxAge(3000);
             }
         };
+    }
+
+    @GetMapping("/scrap")
+    public static String Matching(@RequestParam(name = "data") String data) throws JSONException, IOException {
+        List<ArrayList<Job>> response = new ArrayList<>();
+        JSONArray allData;
+        System.out.println("data"+data);
+        try {
+            allData = new JSONArray(data);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        for (int i = 0; i < allData.length(); i++) {
+        JSONObject obj = allData.getJSONObject(i);
+            System.out.println("data" + i + " = "  + obj.toString());
+            try {
+                response.add(ScrappingController.doScrapping(obj.getString("job"), obj.getString("location")));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return response.toString();
+
     }
 
 } 
