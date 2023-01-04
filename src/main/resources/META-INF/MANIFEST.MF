@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Main-Class: C:\Users\hmoul\Downloads\parser_backend_api\parser_backend_a
+ pi\parser_backend_api\target\classes\com\wymee\backparser\parser_backen
+ d_apiC:\Users\hmoul\Downloads\parser_backend_api\parser_backend_api\par
+ ser_backend_api\target\classes\com\wymee\backparser\parser_backend_api
+
