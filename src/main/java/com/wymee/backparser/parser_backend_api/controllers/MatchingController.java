@@ -76,29 +76,4 @@ public class MatchingController {
         };
     }
 
-    @GetMapping("/scrap")
-    public static String Matching(@RequestParam(name = "data") String data) throws JSONException, IOException {
-        List<ArrayList<Job>> response = new ArrayList<>();
-        JSONArray allData;
-        System.out.println("data"+data);
-        try {
-            allData = new JSONArray(data);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        for (int i = 0; i < allData.length(); i++) {
-        JSONObject obj = allData.getJSONObject(i);
-            System.out.println("data" + i + " = "  + obj.toString());
-            try {
-                response.add(ScrappingController.doScrapping(obj.getString("job"), obj.getString("location")));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return response.toString();
-
-    }
-
-} 
+}

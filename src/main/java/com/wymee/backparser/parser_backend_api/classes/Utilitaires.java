@@ -3,7 +3,6 @@ package com.wymee.backparser.parser_backend_api.classes;
 import com.wymee.backparser.parser_backend_api.model.Job;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -61,20 +60,4 @@ public class Utilitaires {
         };
     }
 
-    public static Job jobifyJson(JSONObject obj) throws JSONException{
-        Job job = new Job();
-
-        job.setTitle(obj.getString("title"));
-        job.setDescription(obj.getString("description"));
-        job.setJobPostedAt(obj.getString("jobPostedAt"));
-        job.setCompany(obj.getString("company"));
-        job.setCompanyWebSite(obj.getString("companyWebSite"));
-        job.setLocation(obj.getString("location"));
-        job.setJobContrat(obj.getString("jobContrat"));
-        job.setBeginDate(obj.getString("beginDate"));
-        job.setSalaryRange(obj.getString("salaryRange"));
-        job.setJobSource(obj.getString("jobSource"));
-
-        return job;
-    }
 }

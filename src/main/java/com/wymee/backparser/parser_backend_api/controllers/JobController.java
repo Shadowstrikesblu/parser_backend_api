@@ -27,11 +27,7 @@ public class JobController {
     public ResponseEntity<Job> findJobById(@PathVariable(value = "id") long id) {
         Optional<Job> job = jobRepository.findById(id);
 
-        if (job.isPresent()) {
-            return ResponseEntity.ok().body(job.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return job.map(value -> ResponseEntity.ok().body(value)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
